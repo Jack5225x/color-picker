@@ -81,7 +81,7 @@ public class GameWindow extends JFrame implements MouseListener {
 		
 	public JToggleButton btnSelectColor = new JToggleButton("Select Color");
 	
-	public JButton btnColorDisplay = new JButton();
+	public JButton btnColorDisplay = new JButton(), btnSave = new JButton("<html>&#128190</>");;
 	
 	public JLabel image, rgbCode = new JLabel();
 	
@@ -103,10 +103,13 @@ public class GameWindow extends JFrame implements MouseListener {
 			
 			JMenuItem mnitmScheme = new JMenuItem("Generate color scheme");
 			mnEdit.add(mnitmScheme);
+			
+			JMenuItem mnitmTable = new JMenuItem("Saved colors");
+			mnEdit.add(mnitmTable);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setPreferredSize(new Dimension(315, 120));
+		contentPane.setPreferredSize(new Dimension(350, 120));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		contentPane.requestFocus();
@@ -118,6 +121,9 @@ public class GameWindow extends JFrame implements MouseListener {
 		btnSelectColor.setBounds(25, 25, 120, 25);
 		contentPane.add(btnSelectColor);
 				
+		btnSave.setBounds(300, 25, 40, 25);
+		contentPane.add(btnSave);
+		
 		rgbCode.setBounds(1,1,20,20);
 		contentPane.add(rgbCode);
 		rgbCode.setVisible(false);
@@ -134,6 +140,7 @@ public class GameWindow extends JFrame implements MouseListener {
 		colorOutput.setColumns(10);
 				
 		pack();
+		
 		
 		try {
 			bot = new Robot();
@@ -156,55 +163,79 @@ public class GameWindow extends JFrame implements MouseListener {
 		JPanel colorDisplayDialog = new JPanel();
 		colorDisplayDialog.add(cd.dialog);
 		
+		ColorTable ct = new ColorTable();
+		JPanel colorTableDisplay = new JPanel();
+		colorTableDisplay.add(ct.dialog);
+		
 		pack();
 		
 		mnitmScheme.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, colorDialog, "Color Select", JOptionPane.PLAIN_MESSAGE);
+				int ok = JOptionPane.showConfirmDialog(null, colorDialog, "Color Select", JOptionPane.PLAIN_MESSAGE);
 				Color c = new Color(0, 0, 0);
-				if (csp.btnPrevColor.isSelected()) {
-					c = GetRGB.parseRGB(rgbCode.getText());
-				} else {
-					if (csp.btnNewColor.isSelected()) {
-						if (csp.btnRed.isSelected())
-							c = csp.btnRed.getBackground();
-						if (csp.btnOrange.isSelected())
-							c = csp.btnOrange.getBackground();
-						if (csp.btnOrangeYellow.isSelected())
-							c = csp.btnOrangeYellow.getBackground();
-						if (csp.btnYellow.isSelected())
-							c = csp.btnYellow.getBackground();
-						if (csp.btnBrightYellow.isSelected())
-							c = csp.btnBrightYellow.getBackground();
-						if (csp.btnYellowGreen.isSelected())
-							c = csp.btnYellowGreen.getBackground();
-						if (csp.btnGreen.isSelected())
-							c = csp.btnGreen.getBackground();
-						if (csp.btnCyan.isSelected())
-							c = csp.btnCyan.getBackground();
-						if (csp.btnBlue.isSelected())
-							c = csp.btnBlue.getBackground();
-						if (csp.btnIndigo.isSelected())
-							c = csp.btnIndigo.getBackground();
-						if (csp.btnViolet.isSelected())
-							c = csp.btnViolet.getBackground();
-						if (csp.btnPurple.isSelected())
-							c = csp.btnPurple.getBackground();
+				if (ok == JOptionPane.OK_OPTION) {
+					if (csp.btnPrevColor.isSelected()) {
+						c = GetRGB.parseRGB(rgbCode.getText());
+					} else {
+						if (csp.btnNewColor.isSelected()) {
+							if (csp.btnRed.isSelected())
+								c = csp.btnRed.getBackground();
+							if (csp.btnOrange.isSelected())
+								c = csp.btnOrange.getBackground();
+							if (csp.btnOrangeYellow.isSelected())
+								c = csp.btnOrangeYellow.getBackground();
+							if (csp.btnYellow.isSelected())
+								c = csp.btnYellow.getBackground();
+							if (csp.btnBrightYellow.isSelected())
+								c = csp.btnBrightYellow.getBackground();
+							if (csp.btnYellowGreen.isSelected())
+								c = csp.btnYellowGreen.getBackground();
+							if (csp.btnGreen.isSelected())
+								c = csp.btnGreen.getBackground();
+							if (csp.btnCyan.isSelected())
+								c = csp.btnCyan.getBackground();
+							if (csp.btnBlue.isSelected())
+								c = csp.btnBlue.getBackground();
+							if (csp.btnIndigo.isSelected())
+								c = csp.btnIndigo.getBackground();
+							if (csp.btnViolet.isSelected())
+								c = csp.btnViolet.getBackground();
+							if (csp.btnPurple.isSelected())
+								c = csp.btnPurple.getBackground();
+						}
 					}
+					//System.out.println(c);
+					
+					Color[] scheme = ColorGen.monoGen(c);
+					
+					cd.color1.setBackground(c);
+					cd.color2.setBackground(scheme[0]);
+					cd.color3.setBackground(scheme[1]);
+					cd.color4.setBackground(scheme[2]);
+					cd.color5.setBackground(scheme[3]);
+					cd.color6.setBackground(scheme[4]);
+					
+					JOptionPane.showMessageDialog(null, colorDisplayDialog, "Color Scheme", JOptionPane.PLAIN_MESSAGE);
 				}
-				//System.out.println(c);
+			}
+		});
+		
+		mnitmTable.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, colorTableDisplay, "Saved Colors", JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+		
+		btnSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String name = JOptionPane.showInputDialog("Enter a custom name: ");
 				
-				Color[] scheme = ColorGen.monoGen(c);
-				
-				cd.color1.setBackground(c);
-				cd.color2.setBackground(scheme[0]);
-				cd.color3.setBackground(scheme[1]);
-				cd.color4.setBackground(scheme[2]);
-				cd.color5.setBackground(scheme[3]);
-				cd.color6.setBackground(scheme[4]);
-				
-				JOptionPane.showMessageDialog(null, colorDisplayDialog, "Color Scheme", JOptionPane.PLAIN_MESSAGE);
+				String[] data = {name, colorOutput.getText(), GetRGB.rgbToString(rgbCode.getText())};
+				ct.data[ct.colorCount] = data;
+				ct.colorCount++;
 			}
 		});
 		
