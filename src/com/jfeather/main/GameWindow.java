@@ -232,10 +232,12 @@ public class GameWindow extends JFrame implements MouseListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String name = JOptionPane.showInputDialog("Enter a custom name: ");
-				
-				String[] data = {name, colorOutput.getText(), GetRGB.rgbToString(rgbCode.getText())};
-				ct.data[ct.colorCount] = data;
-				ct.colorCount++;
+				if (name != null) {
+					String[] data = {name, colorOutput.getText(), GetRGB.rgbToString(rgbCode.getText())};
+					ct.data[ct.colorCount] = data;
+					ct.colorCount++;
+					ct.saveColor(data);
+				}
 			}
 		});
 		
